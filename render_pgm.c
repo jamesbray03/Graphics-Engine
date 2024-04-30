@@ -3,7 +3,7 @@
  *
  * File:     render_pgm.c
  * Author:   James Bray
- * Repo:     https://github.com/James-Bray19/ASCII-Graphics-Engine
+ * Repo:     https://github.com/James-Bray19/Graphics-Engine
  *
  * A simple 3D graphics engine that reads in one or more obj files 
  * and renders them as a pgm image.
