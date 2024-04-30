@@ -2,7 +2,7 @@
 
 A simple 3D graphics engine using [LML](https://github.com/jamesbray03/Lightweight-Matrix-Library) which renders obj files. 
 
-![high_res](https://github.com/jamesbray03/Graphics-Engine/assets/47334864/9e81e6f1-5d54-43c3-838a-3746ea5350bc)
+![Torus](https://github.com/jamesbray03/Graphics-Engine/assets/47334864/cfe18c23-6147-4073-9be2-ea01d6c0e0ba)
 
 ## Setting up a scene
 
