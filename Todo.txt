@@ -1,9 +1,0 @@
-// to do for c graphics engine
-
-=====================
-multiple meshes
-add wirefrrame option
-add z ordered rendering
-add objects
-add lighting scenario handling
-add clipping

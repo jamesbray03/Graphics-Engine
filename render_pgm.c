@@ -108,15 +108,15 @@ void main() {
         int perspective; double z_near, z_far, fov;
 
         char default_values = 'n';
-        do { printf("\tuse default camera? (y/n): "); scanf(" %c", &default_values); } 
+        do { printf("    use default camera? (y/n): "); scanf(" %c", &default_values); } 
         while (default_values != 'y' && default_values != 'n');
 
         if (default_values == 'y') {
             perspective = 1; z_near = 0.1; z_far = 10; fov = 60;
         } else {
             do { printf("\tperspective: "); scanf("%d", &perspective); } while (perspective < 0 || perspective > 1);
-            do { printf("\tfar clipping plane: "); scanf("%lf", &z_far); } while (z_far <= 0);
             do { printf("\tnear clipping plane: "); scanf("%lf", &z_near); } while (z_near <= 0);
+            do { printf("\tfar clipping plane: "); scanf("%lf", &z_far); } while (z_far <= 0);
             do { printf("\tfield of view: "); scanf("%lf", &fov); } while (fov <= 0 || fov >= 180);
         }
         Matrix *projection = get_projection(width, height, fov, z_near, z_far);
@@ -134,7 +134,7 @@ void main() {
             queue = realloc(queue, num_objects * sizeof(Mesh *));
             queue[num_objects - 1] = malloc(sizeof(Mesh));
 
-            printf("\n  Object %d Position\n", num_objects);
+            printf("\n    Object %d:\n", num_objects);
 
             // get object file
             FILE *obj_file; char obj_name[256], obj_path[256];
@@ -156,9 +156,9 @@ void main() {
                 rx = 0; ry = 0; rz = 0;
                 tx = 0; ty = 0; tz = 3;
             } else {
-                printf("\tscale: "); scanf("%lf %lf %lf", &sx, &sy, &sz);
-                printf("\trotation: "); scanf("%lf %lf %lf", &rx, &ry, &rz);
-                printf("\ttranslation: "); scanf("%lf %lf %lf", &tx, &ty, &tz);
+                printf("\t    scale: "); scanf("%lf %lf %lf", &sx, &sy, &sz);
+                printf("\t    rotation: "); scanf("%lf %lf %lf", &rx, &ry, &rz);
+                printf("\t    translation: "); scanf("%lf %lf %lf", &tx, &ty, &tz);
             }
 
             // position object in 3D space
@@ -179,10 +179,12 @@ void main() {
         printf("\n--------------- FINISHED SETUP ---------------\n");
         printf("\nPress any key to render..."); getchar(); getchar();
 
+
+
         // create the pgm file
-        // FILE* pgm_file = fopen(pgm_path, "w");
-        // fprintf(pgm_file, "P2\n%d %d\n255\n", width, height);
-        // fclose(pgm_file);
+        FILE *pgm_file = fopen(pgm_path, "w");
+        fprintf(pgm_file, "P2\n%d %d\n255\n", width, height);
+        fclose(pgm_file);
 
         // render objects into the file
         for (int i = 0; i < num_objects; i++) { render(queue[i], width, height, perspective, pgm_path); }
@@ -402,10 +404,10 @@ double get_light_intensity(Mesh *m, int face_idx) {
 
     // get the light intensity
     double dot = face_norm->data[0][0] * 0.408248 +
-                 face_norm->data[0][1] * -0.816497 +
+                 face_norm->data[0][1] * 0.816497 +
                  face_norm->data[0][2] * 0.408248;
 
-    return fmax(0.00, dot);
+    return fmax(0.05, dot);
 }
 
 void draw_line(Matrix *screen, int x1, int y1, int x2, int y2, double intensity) {
@@ -471,45 +473,43 @@ void draw_triangle(Matrix *screen, int x1, int y1, int x2, int y2, int x3, int y
 }
 
 void buffer_to_pgm(Matrix *screen, int width, int height, char *filepath) {
-// ------------------------------
 
-    FILE* pgm_file = fopen(filepath, "w+");
+    // read in previous image data and store in a buffer
+    FILE *pgm_file = fopen(filepath, "r");
+    if (pgm_file == NULL) { printf("Error opening file!\n"); return; }
+
+    Matrix *prev_screen = zeros(height, width);
+
+    // if file is empty leave prev screen as zeros
+    if (fscanf(pgm_file, "P2\n%d %d\n255\n", &width, &height) == EOF) { fclose(pgm_file); }
+    // otherwise fetch the previous screen data
+    else {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                fscanf(pgm_file, "%lf", &prev_screen->data[i][j]);
+            }
+        }
+        fclose(pgm_file);
+    }
+
+    // rewrite image with current screen buffer (add object like stickers on top of previous image)
+    pgm_file = fopen(filepath, "w");
+    if (pgm_file == NULL) { printf("Error opening file!\n"); return; }
     fprintf(pgm_file, "P2\n%d %d\n255\n", width, height);
-    for (int i = height - 1; i >= 0; i--) {
+    
+    Matrix *curr_screen = scalar_multiply(screen, 255);
+
+    for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (screen->data[i][j] != 0) {
-                fprintf(pgm_file, "%d ", (int)(screen->data[i][j] * 255));
-            } else {
-                fprintf(pgm_file, "%d ", 0);
+            if (screen->data[i][j] != 0) { 
+                fprintf(pgm_file, "%d ", (int)curr_screen->data[i][j]); 
+            } 
+            else { 
+                fprintf(pgm_file, "%d ", (int)prev_screen->data[i][j]); 
             }
         }
         fprintf(pgm_file, "\n");
     }
-
-
-
-
-
-// ------------------------------
-    // open file and move to start of data
-    // FILE* pgm_file = fopen(filepath, "r+");
-    
-    // if (pgm_file == NULL) { printf("couldnt read file"); return; }
-    // fscanf(pgm_file, "P2\n%d %d\n255\n", &width, &height);
-
-    // Write the updated pixel values to the file
-    // int pixel_value;
-    // for (int i = height - 1; i >= 0; i--) {
-    //     for (int j = 0; j < width; j++) {
-    //         fscanf(pgm_file, "%d ", &pixel_value);
-    //         if (screen->data[i][j] != 0) {
-    //             fprintf(pgm_file, "%d ", (int)(screen->data[i][j] * 255));
-    //         } else {
-    //             fprintf(pgm_file, "%d ", pixel_value);
-    //         }
-    //     }
-    //     fprintf(pgm_file, "\n");
-    // }
     fclose(pgm_file);
 }
 
@@ -541,12 +541,9 @@ void render(Mesh *m, int width, int height, int perspective, char *filepath) {
         int v3 = m->faces->data[i][2] - 1;
 
         // get vertex coordinates
-        int x1 = m->verts->data[v1][0];
-        int y1 = m->verts->data[v1][1];
-        int x2 = m->verts->data[v2][0];
-        int y2 = m->verts->data[v2][1];
-        int x3 = m->verts->data[v3][0];
-        int y3 = m->verts->data[v3][1];
+        int x1 = m->verts->data[v1][0]; int y1 = m->verts->data[v1][1];
+        int x2 = m->verts->data[v2][0]; int y2 = m->verts->data[v2][1];
+        int x3 = m->verts->data[v3][0]; int y3 = m->verts->data[v3][1];
 
         // fill triangle and draw edges (in rendering order)
         draw_triangle(screen, x1, y1, x2, y2, x3, y3, 1, get_light_intensity(m, i));
