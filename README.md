@@ -1,5 +1,6 @@
 # Graphics Engine
 
+![high_res](https://github.com/jamesbray03/Graphics-Engine/assets/47334864/9e81e6f1-5d54-43c3-838a-3746ea5350bc)
 
 A simple 3D graphics engine using [LML](https://github.com/jamesbray03/Lightweight-Matrix-Library) which renders obj files. 
 
