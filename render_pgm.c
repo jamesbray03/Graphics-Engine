@@ -1,7 +1,7 @@
 /*
- * ASCII Graphics Engine
+ * Graphics Engine
  *
- * File:     render_object.c
+ * File:     render_pgm.c
  * Author:   James Bray
  * Repo:     https://github.com/James-Bray19/ASCII-Graphics-Engine
  *
