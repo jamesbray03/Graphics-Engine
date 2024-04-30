@@ -1,8 +1,9 @@
 # Graphics Engine
 
+A simple 3D graphics engine using [LML](https://github.com/jamesbray03/Lightweight-Matrix-Library) which renders obj files. 
+
 ![high_res](https://github.com/jamesbray03/Graphics-Engine/assets/47334864/9e81e6f1-5d54-43c3-838a-3746ea5350bc)
 
-A simple 3D graphics engine using [LML](https://github.com/jamesbray03/Lightweight-Matrix-Library) which renders obj files. 
 
 ## Setting up a scene
 
@@ -56,3 +57,9 @@ Object Settings
 
 Press any key to render...
 ```
+
+## Upcoming Features
+- [ ] Z-ordering - so that objects are rendered in the correct order.
+- [ ] Clipping - so that objects are not rendered outside of the screen.
+- [ ] Custom lighting - so that objects are shaded based on custom light sources.
+- [ ] Wireframe toggle - so that objects can be rendered as wireframes.
