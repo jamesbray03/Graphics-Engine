@@ -4,7 +4,9 @@ A simple 3D graphics engine using [LML](https://github.com/jamesbray03/Lightweig
 
 ![Torus](https://github.com/jamesbray03/Graphics-Engine/assets/47334864/cfe18c23-6147-4073-9be2-ea01d6c0e0ba)
 
-## Setting up a scene
+## Setting up a scene using "render_pgm"
+
+Run the program and you will be prompted to set up a scene. 
 
 ### Settings
 
@@ -57,8 +59,28 @@ Object Settings
 Press any key to render...
 ```
 
+## Using "render_all"
+
+Ensure your OBJ files are in the obj folder and your PGM files are in the pgm folder. Then run the program and it will render all of the objects to the pgm folder.
+
+```
+5 objects queued.
+
+Rendering...
+
+          1. Cone                loaded...      rendered (6 tris in 1.93s)
+          2. Cube                loaded...      rendered (6 tris in 1.98s)
+          3. Icosphere           loaded...      rendered (32 tris in 1.99s)
+          4. Sphere              loaded...      rendered (511 tris in 2.03s)
+          5. Torus               loaded...      rendered (956 tris in 2.03s)
+
+All objects rendered successfully.
+(5 objects in 9.99s, avg: 2.00s)
+```
+
 ## Upcoming Features
-- [ ] Z-ordering - so that objects are rendered in the correct order.
+- [X] Z-ordering - so that objects are rendered in the correct order.
+- [ ] Anti-Aliasing - so that edges are smoothed.
 - [ ] Clipping - so that objects are not rendered outside of the screen.
 - [ ] Custom lighting - so that objects are shaded based on custom light sources.
 - [ ] Wireframe toggle - so that objects can be rendered as wireframes.
